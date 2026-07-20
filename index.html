@@ -44,7 +44,7 @@
             border-radius: 8px;
             overflow: hidden;
             z-index: 1;
-            background: #fff;
+            background: #fff; /* 確保內頁底色為純白不透明 */
         }
 
         /* 內頁-上 與 內頁-下 */
@@ -80,13 +80,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden; /* 💡 確保翻過去時看不到背面 */
+            backface-visibility: hidden; /* 💡 關鍵：翻過去時看不到背面 */
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        /* 正面：封面（完全不透明） */
+        /* 正面：封面（⚠️ 這裡確認沒有 opacity 數值） */
         .face.front {
             z-index: 2;
             transform: rotateY(0deg);
@@ -130,9 +130,8 @@
 
         /* 【當卡片被點擊打開時的狀態 (.open)】 */
         .card-container.open .movable-cover {
-            /* 向上掀開 135 度，微微露出封底並完美展現內部 */
             transform: rotateX(135deg); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2); /* 打開時加強陰影 */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
         .card-container.open .click-hint {
