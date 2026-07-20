@@ -37,11 +37,11 @@
             transform: translateY(50%);
         }
 
-        /* 摺頁容器：高度改由 JS 動態計算，預設先給個舒服的直式比例 */
+        /* 摺頁容器：高度由 JS 動態計算 */
         .folder-half {
             position: relative;
             width: 100%;
-            height: 420px; /* JS 載入後會精準覆蓋這個高度 */
+            height: 420px; 
             transform-style: preserve-3d;
             display: block;
         }
@@ -82,7 +82,7 @@
         .face img {
             position: absolute;
             width: 100%;
-            height: 200%; /* 圖片為容器的兩倍高 */
+            height: 200%; 
             display: block;
         }
 
@@ -178,7 +178,6 @@
                 <img src="cover.png" alt="邀請函封面">
             </div>
             <div class="face back">
-                <!-- 💡 用這張圖作為比例基準計算器 -->
                 <img src="inside.png" id="baseImage" alt="邀請函內頁上">
             </div>
         </div>
@@ -204,42 +203,36 @@
         const baseImg = document.getElementById('baseImage');
         const folders = document.querySelectorAll('.folder-half');
 
-        // 💡 核心自動比例修正：讀取圖片寬高，精準設定半面容器高度
+        // 自動比例修正
         function adjustCardRatio() {
             if (baseImg.naturalWidth > 0 && baseImg.naturalHeight > 0) {
-                // 算出整張直式大圖的 寬高比 (width / height)
                 const imgRatio = baseImg.naturalWidth / baseImg.naturalHeight;
-                // 因為容器只裝「半張圖」，所以半面容器的實際高度 = 容器當前寬度 / (imgRatio * 2)
                 const currentWidth = card.offsetWidth;
                 const calculatedHeight = currentWidth / (imgRatio * 2);
                 
-                // 將計算出來的完美高度套用到摺頁容器上
                 folders.forEach(folder => {
                     folder.style.height = calculatedHeight + 'px';
                 });
             }
         }
 
-        // 當圖片載入完成，或視窗大小改變時，自動重新計算
         baseImg.addEventListener('load', adjustCardRatio);
         window.addEventListener('resize', adjustCardRatio);
-        
-        // 確保在圖片已經快取的情況下也能觸發計算
-        if (baseImg.complete) {
-            adjustCardRatio();
-        }
+        if (baseImg.complete) { adjustCardRatio(); }
 
-        // YouTube 播放器初始化
+        // 初始化 YouTube 播放器器，設定無限循環播放
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
-                videoId: 'kANOhdjc7l4',
+                videoId: 'kANOhdjc7l4', // 您的爵士音樂 ID
                 playerVars: {
                     'autoplay': 0,
                     'controls': 0,
                     'disablekb': 1,
                     'fs': 0,
                     'rel': 0,
-                    'modestbranding': 1
+                    'modestbranding': 1,
+                    'loop': 1,               // 💡 啟用循環播放
+                    'playlist': 'kANOhdjc7l4' // 💡 YouTube 規定：設定 loop 時必須重複填寫當前影片 ID 作為播放清單
                 }
             });
         }
