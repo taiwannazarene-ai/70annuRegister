@@ -115,24 +115,33 @@
         }
         .bottom-folder .back img { top: 0; }
 
-        /* 外側按鈕定位容器 */
+        /* 💡 外部按鈕公用動畫容器：控制卡片打開時才浮現 */
         .outside-link-container {
             position: absolute;
             bottom: 8px;       
-            right: 15%;        
             z-index: 20;       
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease 0.8s;
         }
 
-        /* 當卡片打開時，顯示連結按鈕並啟用點擊 */
+        /* 💡 左側：線上報名按鈕定位 */
+        .left-btn-pos {
+            left: 15%; /* 對齊左邊報名 QR code 的中央線（可微調數字） */
+        }
+
+        /* 💡 右側：網站連結按鈕定位 */
+        .right-btn-pos {
+            right: 15%; /* 對齊右邊網站網址的中央線 */
+        }
+
+        /* 當卡片打開時，兩個按鈕同時顯示並啟用點擊 */
         .card-container.open .outside-link-container {
             opacity: 1;
             pointer-events: auto;
         }
 
-        /* 網站連結按鈕主體（設定相對定位以供動畫貼附） */
+        /* 按鈕主體樣式 */
         .web-link {
             position: relative;
             display: inline-block;
@@ -152,19 +161,19 @@
             background-color: #a00000;
         }
 
-        /* 💡 右上角互動小動畫：閃爍呼吸點 */
+        /* 右上角互動小動畫：閃爍呼吸點 */
         .badge-animation {
             position: absolute;
             top: -4px;
             right: -4px;
             width: 8px;
             height: 8px;
-            background-color: #ffcc00; /* 使用亮眼的金黃色配合大紅色 */
+            background-color: #ffcc00; 
             border-radius: 50%;
             box-shadow: 0 0 4px #ffcc00;
         }
 
-        /* 💡 波紋擴散特效 */
+        /* 波紋擴散特效 */
         .badge-animation::after {
             content: '';
             position: absolute;
@@ -243,11 +252,18 @@
             </div>
         </div>
 
-        <!-- 網站連結（內含右上角動畫小點） -->
-        <div class="outside-link-container" id="linkBlock">
-            <a href="https://sites.google.com/view/twnnaza70anu/%E9%A6%96%E9%A0%81" target="_blank" class="web-link" id="linkAnchor">
+        <!-- 💡 新增：左側「線上報名」按鈕（對應 Google 表單） -->
+        <div class="outside-link-container left-btn-pos">
+            <a href="https://forms.gle/2SzXNmL9b4hQ5FoQA" target="_blank" class="web-link register-link-btn">
+                線上報名
+                <span class="badge-animation"></span>
+            </a>
+        </div>
+
+        <!-- 右側「網站連結」按鈕（對應 70周年官網） -->
+        <div class="outside-link-container right-btn-pos">
+            <a href="https://sites.google.com/view/twnnaza70anu/%E9%A6%96%E9%A0%81" target="_blank" class="web-link official-link-btn">
                 網站連結
-                <!-- 💡 動態光點元件，放在 <a> 標籤內確保點擊它也能連過去 -->
                 <span class="badge-animation"></span>
             </a>
         </div>
@@ -258,8 +274,9 @@
         const card = document.getElementById('invitationCard');
         const baseImg = document.getElementById('baseImage');
         const folders = document.querySelectorAll('.folder-half');
-        const linkBlock = document.getElementById('linkBlock');
-        const linkAnchor = document.getElementById('linkAnchor');
+        
+        // 抓取兩個連結按鈕
+        const linkBtns = document.querySelectorAll('.web-link');
 
         // 建立原生音訊物件
         const bgm = new Audio('music.mp3');
@@ -282,9 +299,11 @@
         window.addEventListener('resize', adjustCardRatio);
         if (baseImg.complete) { adjustCardRatio(); }
 
-        // 防止點擊「網站連結」與小動畫時，連帶觸發卡片的闔上動畫
-        linkAnchor.addEventListener('click', (e) => {
-            e.stopPropagation();
+        // 💡 遍歷所有外部連結按鈕，防止點擊時誤觸卡片闔上動畫
+        linkBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
         });
 
         // 卡片點擊事件
