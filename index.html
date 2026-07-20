@@ -17,98 +17,93 @@
             align-items: center;
             min-height: 100vh;
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            overflow-x: hidden;
+            overflow: hidden;
             padding: 20px;
         }
 
-        /* 邀請卡主容器 */
+        /* 邀請卡外層主容器：控制整體卡片在打開時向下平移 */
         .card-container {
             position: relative;
             width: 100%;
             max-width: 750px;
             aspect-ratio: 4 / 3; 
-            perspective: 2000px; 
+            perspective: 2500px; /* 加強 3D 深度感 */
             cursor: pointer;
-        }
-
-        /* 內頁容器（固定在底層） */
-        .inside-pages {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
-            z-index: 1;
-            background: #ffffff; /* 內頁底色純白 */
-        }
-
-        /* 內頁-上 與 內頁-下 */
-        .inside-top, .inside-bottom {
-            width: 100%;
-            height: 50%; 
-            overflow: hidden;
-        }
-        .inside-top img, .inside-bottom img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* 💡 改為 contain 確保整張圖完整顯示不變形錯位 */
-            background-color: #f7f7f7; /* 補齊可能出現的邊緣白底 */
-            display: block;
-        }
-
-        /* 掀開式的上蓋 */
-        .movable-cover {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transform-origin: top center; 
-            transform-style: preserve-3d; 
             transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 2;
+            transform: translateY(0);
         }
 
-        /* 蓋子正反面的共同設定 */
+        /* 💡 核心動態：當打開時，整張卡片向下移動半張卡片的高度(約25%)，挪出空間給翻上去的內頁上 */
+        .card-container.open {
+            transform: translateY(25%);
+        }
+
+        /* 摺頁共同基礎設定 */
+        .folder-half {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 50%; /* 分為上下兩半 */
+            transform-style: preserve-3d;
+            border-radius: 4px;
+        }
+
+        /* ==================== 1. 上半部摺頁 (軸心在頂端) ==================== */
+        .top-folder {
+            top: 0;
+            transform-origin: top center;
+            transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2; /* 確保在上層 */
+        }
+
+        /* 💡 點擊打開：上半部向上翻轉 180 度 */
+        .card-container.open .top-folder {
+            transform: rotateX(180deg);
+        }
+
+        /* ==================== 2. 下半部摺頁 (固定不動) ==================== */
+        .bottom-folder {
+            bottom: 0;
+            z-index: 1;
+        }
+
+        /* 正反面共同設定 */
         .face {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden; 
-            border-radius: 8px;
+            backface-visibility: hidden; /* 💡 翻轉時隱藏背面 */
+            background-color: #f7f7f7;   /* 補實底色，杜絕透明穿透 */
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);/
+        }
+        .face img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* 確保整張圖片完整不變形 */
+            display: block;
         }
 
-        /* 正面：封面 */
-        .face.front {
+        /* 【上半部正面】：封面 */
+        .top-folder .front {
             z-index: 2;
-            transform: rotateY(0deg);
-            background-color: #f7f7f7; /* 💡 關鍵：強制加上不透明的實色底，防止去背圖穿透 */
-        }
-        .face.front img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* 💡 改為 contain 確保圖片完美對齊 */
         }
 
-        /* 背面：封底 */
-        .face.back {
+        /* 【上半部背面】：內頁上 (因為翻轉180度，需預先倒轉，翻開後才會是正的) */
+        .top-folder .back {
             transform: rotateX(180deg);
-            z-index: 1;
-            background-color: #f7f7f7; /* 💡 封底也強制補實色底 */
         }
-        .face.back img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+
+        /* 【下半部正面】：內頁下 */
+        .bottom-folder .front {
+            z-index: 2;
+        }
+
+        /* 【下半部背面】：封底 (藏在內頁下後面，維持原樣) */
+        .bottom-folder .back {
+            transform: rotateX(0deg); 
+            z-index: 1;
         }
 
         /* 輕微浮動的提示點擊標籤 */
@@ -129,12 +124,6 @@
             pointer-events: none;
             transition: opacity 0.4s ease;
             z-index: 3;
-        }
-
-        /* 打開狀態 */
-        .card-container.open .movable-cover {
-            transform: rotateX(135deg); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
         .card-container.open .click-hint {
@@ -162,23 +151,27 @@
         
         <div class="click-hint">👇 點擊親自啟封邀請函</div>
 
-        <!-- 1. 動態上蓋層 -->
-        <div class="movable-cover">
+        <!-- 1. 上半部摺頁 (包含：封面 / 內頁上) -->
+        <div class="folder-half top-folder">
+            <!-- 正面：封面 -->
             <div class="face front">
                 <img src="封面.png" alt="邀請函封面">
             </div>
+            <!-- 背面：內頁上 -->
             <div class="face back">
-                <img src="封底.png" alt="邀請函封底">
+                <img src="內頁上.png" alt="邀請函內頁上">
             </div>
         </div>
 
-        <!-- 2. 固定底層 -->
-        <div class="inside-pages">
-            <div class="inside-top">
-                <img src="內頁上.png" alt="邀請函內頁上">
-            </div>
-            <div class="inside-bottom">
+        <!-- 2. 下半部摺頁 (包含：內頁下 / 封底) -->
+        <div class="folder-half bottom-folder">
+            <!-- 正面：內頁下 -->
+            <div class="face front">
                 <img src="內頁下.png" alt="邀請函內頁下">
+            </div>
+            <!-- 背面：封底 -->
+            <div class="face back">
+                <img src="封底.png" alt="邀請函封底">
             </div>
         </div>
 
