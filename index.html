@@ -115,6 +115,48 @@
         }
         .bottom-folder .back img { top: 0; }
 
+        /* 💡 網站連結按鈕樣式 */
+        .link-container {
+            position: absolute;
+            /* 預設放在下半部內頁垂直置中的位置，您可以根據實際圖片文字高度微調下面這個 percentage */
+            bottom: 25%; 
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+            padding: 0 20px;
+            /* 預設隱藏，只有當卡片被打開後才允許點擊，避免封面狀態誤觸 */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease 0.8s; /* 稍微延遲顯示，配合翻開動畫 */
+        }
+
+        /* 當卡片打開時，顯示連結按鈕並啟用點擊 */
+        .card-container.open .link-container {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .web-link {
+            display: inline-block;
+            background-color: #8b0000; /* 深紅色調，與提示標籤呼應 */
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .web-link:hover {
+            background-color: #a00000;
+            transform: translateY(-2px);
+        }
+
         /* 提示點擊標籤 */
         .click-hint {
             position: absolute;
@@ -164,6 +206,11 @@
         <div class="folder-half bottom-folder">
             <div class="face front">
                 <img src="inside.png" alt="邀請函內頁下">
+                
+                <!-- 💡 這裡加入了網站連結，點擊會另開視窗 -->
+                <div class="link-container" id="linkBlock">
+                    <a href="https://sites.google.com/d/1mtj5TVpvDeKUd5C2tKbe7WWRn5Xdk6Bc/p/1xfrABDt1rhfp8lSMx9zVbwR--IPDRRId/edit" target="_blank" class="web-link" id="linkAnchor">網站連結</a>
+                </div>
             </div>
             <div class="face back">
                 <img src="cover.png" alt="邀請函封底">
@@ -176,10 +223,12 @@
         const card = document.getElementById('invitationCard');
         const baseImg = document.getElementById('baseImage');
         const folders = document.querySelectorAll('.folder-half');
+        const linkBlock = document.getElementById('linkBlock');
+        const linkAnchor = document.getElementById('linkAnchor');
 
-        // 💡 建立原生音訊物件，指向同資料夾下的 music.mp3
+        // 建立原生音訊物件
         const bgm = new Audio('music.mp3');
-        bgm.loop = true; // 開啟自動循環播放
+        bgm.loop = true; 
 
         // 自動比例修正
         function adjustCardRatio() {
@@ -198,12 +247,16 @@
         window.addEventListener('resize', adjustCardRatio);
         if (baseImg.complete) { adjustCardRatio(); }
 
+        // 防止點擊「網站連結」時，連帶觸發卡片的闔上動畫
+        linkAnchor.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
         // 卡片點擊事件
         card.addEventListener('click', () => {
             const isOpen = card.classList.toggle('open');
             
             if (isOpen) {
-                // 點擊瞬間立刻播放音樂
                 bgm.play().catch(err => {
                     console.log("音訊播放被瀏覽器阻擋:", err);
                 });
