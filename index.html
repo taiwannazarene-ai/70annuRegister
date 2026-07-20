@@ -17,44 +17,40 @@
             align-items: center;
             min-height: 100vh;
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            overflow: hidden;
-            padding: 20px;
+            overflow-x: hidden;
+            padding: 40px 20px; /* 增加上下留白，給翻開後的長卡片更多空間 */
         }
 
         /* 邀請卡外層主容器 */
         .card-container {
             position: relative;
             width: 100%;
-            max-width: 750px;
-            /* 初始折疊狀態：高度只有一半 */
-            aspect-ratio: 4 / 1.5; 
+            max-width: 600px; /* 可以根據需要調整最大寬度 */
             perspective: 2500px; 
             cursor: pointer;
-            transition: all 1.3s cubic-bezier(0.4, 0, 0.2, 1);
-            /* 將陰影與圓角鎖定在外層大容器，確保內部展開時結構一體化 */
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(0);
         }
 
-        /* 當點擊打開時：整體比例拉長為 4/3，並順滑下移挪出空間 */
+        /* 💡 點擊打開時，整張卡片平滑下移，挪出空間給翻上去的內頁上 */
         .card-container.open {
-            aspect-ratio: 4 / 3;
-            transform: translateY(25%);
+            transform: translateY(35%);
         }
 
-        /* 摺頁容器基礎設定 */
+        /* 摺頁容器：移除所有固定高度與比例，由內部圖片自動撐開 */
         .folder-half {
-            position: absolute;
-            left: 0;
+            position: relative;
             width: 100%;
-            height: 100%; 
             transform-style: preserve-3d;
+            display: block;
         }
 
-        /* ==================== 1. 上半部動態摺頁 (負責封面與內頁上) ==================== */
+        /* ==================== 1. 上半部動態摺頁 ==================== */
         .top-folder {
+            position: absolute;
             top: 0;
-            transform-origin: top center; /* 以頂端為軸心往上翻 */
+            left: 0;
+            transform-origin: top center;
             transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 2;
         }
@@ -64,85 +60,74 @@
             transform: rotateX(180deg);
         }
 
-        /* ==================== 2. 下半部底層 (負責內頁下與封底) ==================== */
+        /* ==================== 2. 下半部底層 ==================== */
         .bottom-folder {
-            top: 0; /* 初始與上半部完全重疊 */
+            position: relative; /* 作為推開外層容器高度的基準 */
             z-index: 1;
-            transition: all 1.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 點擊打開：下半部順滑下推 50% 的高度，與翻上去的內頁上無縫對接 */
-        .card-container.open .bottom-folder {
-            top: 50%; 
-        }
-
-        /* 正反面共同設定 */
+        /* 正反面共同設定：完全拿掉 height: 100% */
         .face {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
             backface-visibility: hidden; 
-            background-color: #ffffff; /* 使用純白實底 */
+            background-color: #ffffff;
             overflow: hidden;
         }
         
-        /* 圖片設定：改用 cover 或百分比滿版，確保上下邊緣無縫黏合 */
+        /* 💡 核心修正：高自適應！圖片多高，格子就多高，絕對不留空白 */
         .face img {
             width: 100%;
-            height: 100%;
-            object-fit: cover; 
+            height: auto; 
             display: block;
         }
 
-        /* 【上折頁正面】：封面 */
+        /* 讓正面和背面在絕對定位中完美重疊，且高度一致 */
         .top-folder .front {
+            position: relative;
             z-index: 2;
-            border-radius: 8px; /* 未打開時，封面保有漂亮圓角 */
+            border-radius: 8px 8px 0 0; /* 未打開時，封面有上方圓角 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-
-        /* 【上折頁背面】：內頁上 */
         .top-folder .back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
             transform: rotateX(180deg);
-            /* 💡 打開後它會翻到最上方，因此只有頂部兩角需要圓角，底部（對接處）必須是直角 */
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
+            border-radius: 8px 8px 0 0; /* 翻過去後，變成內頁上的頂部圓角 */
         }
 
-        /* 【底層正面】：內頁下 */
+        /* 下半部設定 */
         .bottom-folder .front {
+            position: relative;
             z-index: 2;
-            /* 💡 打開後它位於最下方，因此只有底部兩角需要圓角，頂部（對接處）必須是直角 */
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
+            border-radius: 0 0 8px 8px; /* 內頁下的底部圓角 */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-
-        /* 【底層背面】：封底 */
         .bottom-folder .back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
             transform: rotateY(180deg); 
             z-index: 1;
-            border-radius: 8px;
+            border-radius: 0 0 8px 8px;
         }
 
         /* 提示點擊標籤 */
         .click-hint {
             position: absolute;
-            bottom: 15px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(139, 0, 0, 0.9); 
             color: white;
-            padding: 8px 20px;
+            padding: 10px 24px;
             border-radius: 25px;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: bold;
             letter-spacing: 1px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             animation: bounce 2s infinite;
             pointer-events: none;
             transition: opacity 0.4s ease;
@@ -166,7 +151,7 @@
         
         <div class="click-hint">👇 點擊親自啟封邀請函</div>
 
-        <!-- 1. 上半部摺頁 (包含：封面 / 內頁上) -->
+        <!-- 1. 上半部摺頁 (封面 / 內頁上) -->
         <div class="folder-half top-folder">
             <div class="face front">
                 <img src="封面.png" alt="邀請函封面">
@@ -176,7 +161,7 @@
             </div>
         </div>
 
-        <!-- 2. 下半部底頁 (包含：內頁下 / 封底) -->
+        <!-- 2. 下半部底頁 (內頁下 / 封底) -->
         <div class="folder-half bottom-folder">
             <div class="face front">
                 <img src="內頁下.png" alt="邀請函內頁下">
@@ -188,7 +173,7 @@
 
     </div>
 
-    <script>
+    <script {cite: 2}>
         const card = document.getElementById('invitationCard');
         card.addEventListener('click', () => {
             card.classList.toggle('open');
