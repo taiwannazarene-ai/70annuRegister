@@ -27,11 +27,11 @@
             width: 100%;
             max-width: 750px;
             aspect-ratio: 4 / 3; 
-            perspective: 2000px; /* 3D 立體透視感 */
+            perspective: 2000px; 
             cursor: pointer;
         }
 
-        /* 內頁容器（固定在底層）*/
+        /* 內頁容器（固定在底層） */
         .inside-pages {
             position: absolute;
             top: 0;
@@ -44,7 +44,7 @@
             border-radius: 8px;
             overflow: hidden;
             z-index: 1;
-            background: #fff; /* 確保內頁底色為純白不透明 */
+            background: #ffffff; /* 內頁底色純白 */
         }
 
         /* 內頁-上 與 內頁-下 */
@@ -56,11 +56,12 @@
         .inside-top img, .inside-bottom img {
             width: 100%;
             height: 100%;
-            object-fit: cover; 
+            object-fit: contain; /* 💡 改為 contain 確保整張圖完整顯示不變形錯位 */
+            background-color: #f7f7f7; /* 補齊可能出現的邊緣白底 */
             display: block;
         }
 
-        /* 掀開式的上蓋（包含封面與裡面的封底） */
+        /* 掀開式的上蓋 */
         .movable-cover {
             position: absolute;
             top: 0;
@@ -80,32 +81,34 @@
             left: 0;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden; /* 💡 關鍵：翻過去時看不到背面 */
+            backface-visibility: hidden; 
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        /* 正面：封面（⚠️ 這裡確認沒有 opacity 數值） */
+        /* 正面：封面 */
         .face.front {
             z-index: 2;
             transform: rotateY(0deg);
+            background-color: #f7f7f7; /* 💡 關鍵：強制加上不透明的實色底，防止去背圖穿透 */
         }
         .face.front img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* 💡 改為 contain 確保圖片完美對齊 */
         }
 
-        /* 背面：封底 (因為上掀 180 度，所以預先轉向讓掀開後是正的) */
+        /* 背面：封底 */
         .face.back {
             transform: rotateX(180deg);
             z-index: 1;
+            background-color: #f7f7f7; /* 💡 封底也強制補實色底 */
         }
         .face.back img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
         }
 
         /* 輕微浮動的提示點擊標籤 */
@@ -128,7 +131,7 @@
             z-index: 3;
         }
 
-        /* 【當卡片被點擊打開時的狀態 (.open)】 */
+        /* 打開狀態 */
         .card-container.open .movable-cover {
             transform: rotateX(135deg); 
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
@@ -138,7 +141,6 @@
             opacity: 0; 
         }
 
-        /* 提示動畫 */
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
             40% { transform: translate(-50%, -10px); }
@@ -158,28 +160,23 @@
 
     <div class="card-container" id="invitationCard">
         
-        <!-- 點擊提示 -->
         <div class="click-hint">👇 點擊親自啟封邀請函</div>
 
-        <!-- 1. 動態上蓋層 (封面 + 封底) -->
+        <!-- 1. 動態上蓋層 -->
         <div class="movable-cover">
-            <!-- 前面：封面 -->
             <div class="face front">
                 <img src="封面.jpg" alt="邀請函封面">
             </div>
-            <!-- 後面：封底 (翻開後會呈現於最上方) -->
             <div class="face back">
                 <img src="封底.png" alt="邀請函封底">
             </div>
         </div>
 
-        <!-- 2. 固定底層 (內頁上 + 內頁下) -->
+        <!-- 2. 固定底層 -->
         <div class="inside-pages">
-            <!-- 內頁 上半部 -->
             <div class="inside-top">
                 <img src="內頁上.jpg" alt="邀請函內頁上">
             </div>
-            <!-- 內頁 下半部 -->
             <div class="inside-bottom">
                 <img src="內頁下.png" alt="邀請函內頁下">
             </div>
@@ -188,7 +185,6 @@
     </div>
 
     <script>
-        // 點擊卡片任何地方切換打開/關閉狀態
         const card = document.getElementById('invitationCard');
         card.addEventListener('click', () => {
             card.classList.toggle('open');
