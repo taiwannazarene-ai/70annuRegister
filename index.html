@@ -115,7 +115,7 @@
         }
         .bottom-folder .back img { top: 0; }
 
-        /* 外側按鈕定位 */
+        /* 外側按鈕定位容器 */
         .outside-link-container {
             position: absolute;
             bottom: 8px;       
@@ -132,7 +132,9 @@
             pointer-events: auto;
         }
 
+        /* 網站連結按鈕主體（設定相對定位以供動畫貼附） */
         .web-link {
+            position: relative;
             display: inline-block;
             background-color: #8b0000; 
             color: #ffffff;
@@ -148,6 +150,42 @@
 
         .web-link:hover {
             background-color: #a00000;
+        }
+
+        /* 💡 右上角互動小動畫：閃爍呼吸點 */
+        .badge-animation {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 8px;
+            height: 8px;
+            background-color: #ffcc00; /* 使用亮眼的金黃色配合大紅色 */
+            border-radius: 50%;
+            box-shadow: 0 0 4px #ffcc00;
+        }
+
+        /* 💡 波紋擴散特效 */
+        .badge-animation::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #ffcc00;
+            animation: pulse 1.6s infinite ease-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+            100% {
+                transform: scale(3.5);
+                opacity: 0;
+            }
         }
 
         /* 提示點擊標籤 */
@@ -205,9 +243,13 @@
             </div>
         </div>
 
-        <!-- 💡 連結已更新為慶典官方首頁網址 -->
+        <!-- 網站連結（內含右上角動畫小點） -->
         <div class="outside-link-container" id="linkBlock">
-            <a href="https://sites.google.com/view/twnnaza70anu/%E9%A6%96%E9%A0%81" target="_blank" class="web-link" id="linkAnchor">網站連結</a>
+            <a href="https://sites.google.com/view/twnnaza70anu/%E9%A6%96%E9%A0%81" target="_blank" class="web-link" id="linkAnchor">
+                網站連結
+                <!-- 💡 動態光點元件，放在 <a> 標籤內確保點擊它也能連過去 -->
+                <span class="badge-animation"></span>
+            </a>
         </div>
 
     </div>
@@ -240,7 +282,7 @@
         window.addEventListener('resize', adjustCardRatio);
         if (baseImg.complete) { adjustCardRatio(); }
 
-        // 防止點擊「網站連結」時，連帶觸發卡片的闔上動畫
+        // 防止點擊「網站連結」與小動畫時，連帶觸發卡片的闔上動畫
         linkAnchor.addEventListener('click', (e) => {
             e.stopPropagation();
         });
