@@ -21,50 +21,57 @@
             padding: 20px;
         }
 
-        /* 邀請卡外層主容器：控制整體卡片在打開時向下平移 */
+        /* 邀請卡外層主容器 */
         .card-container {
             position: relative;
             width: 100%;
             max-width: 750px;
-            aspect-ratio: 4 / 3; 
-            perspective: 2500px; /* 加強 3D 深度感 */
+            /* 💡 一開始折疊時，高度只有一半（ aspect-ratio 從 4/3 變成 4/1.5 ） */
+            aspect-ratio: 4 / 1.5; 
+            perspective: 2500px; 
             cursor: pointer;
-            transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateY(0);
+            transition: all 1.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 💡 核心動態：當打開時，整張卡片向下移動半張卡片的高度(約25%)，挪出空間給翻上去的內頁上 */
+        /* 💡 當打開時，整張卡片向下伸展成完整的 4/3 比例，並向下平移挪出空間 */
         .card-container.open {
+            aspect-ratio: 4 / 3;
             transform: translateY(25%);
         }
 
-        /* 摺頁共同基礎設定 */
+        /* 摺頁容器：定義大小為展開後的半高 */
         .folder-half {
             position: absolute;
             left: 0;
             width: 100%;
-            height: 50%; /* 分為上下兩半 */
+            height: 100%; /* 在未展開前，100% 就是卡片的一半高 */
             transform-style: preserve-3d;
-            border-radius: 4px;
+            border-radius: 8px;
         }
 
-        /* ==================== 1. 上半部摺頁 (軸心在頂端) ==================== */
+        /* ==================== 1. 上半部動態摺頁 (負責封面與內頁上) ==================== */
         .top-folder {
             top: 0;
-            transform-origin: top center;
+            transform-origin: top center; /* 以最上緣為軸心往上翻 */
             transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 2; /* 確保在上層 */
+            z-index: 2; /* 蓋在內頁下與封底的上面 */
         }
 
-        /* 💡 點擊打開：上半部向上翻轉 180 度 */
+        /* 💡 點擊打開：往上翻轉 180 度 */
         .card-container.open .top-folder {
             transform: rotateX(180deg);
         }
 
-        /* ==================== 2. 下半部摺頁 (固定不動) ==================== */
+        /* ==================== 2. 下半部底層 (負責內頁下與封底) ==================== */
         .bottom-folder {
-            bottom: 0;
+            top: 0; /* 一開始重疊在同一個位置 */
             z-index: 1;
+            transition: all 1.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 💡 點擊打開：底層在視覺上要「向下推」到下半部 */
+        .card-container.open .bottom-folder {
+            top: 50%; /* 展開後移到下半部 */
         }
 
         /* 正反面共同設定 */
@@ -74,49 +81,51 @@
             left: 0;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden; /* 💡 翻轉時隱藏背面 */
-            background-color: #f7f7f7;   /* 補實底色，杜絕透明穿透 */
+            backface-visibility: hidden; /* 翻轉時隱藏背面 */
+            background-color: #f7f7f7;   /* 補實底色，杜絕透明 */
             overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
         .face img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* 確保整張圖片完整不變形 */
+            object-fit: contain; 
             display: block;
         }
 
-        /* 【上半部正面】：封面 */
+        /* 【上折頁正面】：封面（一開始唯一看得到的東西） */
         .top-folder .front {
             z-index: 2;
         }
 
-        /* 【上半部背面】：內頁上 (因為翻轉180度，需預先倒轉，翻開後才會是正的) */
+        /* 【上折頁背面】：內頁上（翻上去 180 度後露出來） */
         .top-folder .back {
             transform: rotateX(180deg);
         }
 
-        /* 【下半部正面】：內頁下 */
+        /* 【底層正面】：內頁下（一開始被封面擋住，打開後往下推並露出來） */
         .bottom-folder .front {
             z-index: 2;
         }
 
-        /* 【下半部背面】：封底 (藏在內頁下後面，維持原樣) */
+        /* 【底層背面】：封底（壓在整張卡片的最底下） */
         .bottom-folder .back {
-            transform: rotateX(0deg); 
+            transform: rotateY(180deg); /* 貼著桌面 */
             z-index: 1;
         }
 
-        /* 輕微浮動的提示點擊標籤 */
+        /* 提示點擊標籤 */
         .click-hint {
             position: absolute;
-            bottom: 25px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(139, 0, 0, 0.9); 
             color: white;
-            padding: 10px 22px;
+            padding: 8px 20px;
             border-radius: 25px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             letter-spacing: 1px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
@@ -135,14 +144,6 @@
             40% { transform: translate(-50%, -10px); }
             60% { transform: translate(-50%, -5px); }
         }
-
-        @media (max-width: 480px) {
-            .click-hint {
-                font-size: 13px;
-                padding: 8px 16px;
-                bottom: 15px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -151,25 +152,25 @@
         
         <div class="click-hint">👇 點擊親自啟封邀請函</div>
 
-        <!-- 1. 上半部摺頁 (包含：封面 / 內頁上) -->
+        <!-- 1. 上半部/外層摺頁 (未打開時完全遮罩住底層) -->
         <div class="folder-half top-folder">
-            <!-- 正面：封面 -->
+            <!-- 最外層：封面 -->
             <div class="face front">
                 <img src="封面.png" alt="邀請函封面">
             </div>
-            <!-- 背面：內頁上 -->
+            <!-- 翻開後的裡面上半部：內頁上 -->
             <div class="face back">
                 <img src="內頁上.png" alt="邀請函內頁上">
             </div>
         </div>
 
-        <!-- 2. 下半部摺頁 (包含：內頁下 / 封底) -->
+        <!-- 2. 下半部/內層底頁 (未打開時被封面疊在下方，看不到) -->
         <div class="folder-half bottom-folder">
-            <!-- 正面：內頁下 -->
+            <!-- 翻開後的裡面下半部：內頁下 -->
             <div class="face front">
                 <img src="內頁下.png" alt="邀請函內頁下">
             </div>
-            <!-- 背面：封底 -->
+            <!-- 壓在最底下的背面：封底 -->
             <div class="face back">
                 <img src="封底.png" alt="邀請函封底">
             </div>
