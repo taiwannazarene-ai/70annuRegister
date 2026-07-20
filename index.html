@@ -118,11 +118,11 @@
         /* 💡 網站連結按鈕樣式 */
         /* 💡 精準修正後的網站連結按鈕定位 */
        /* 💡 縮小 50% 並精準下移的網站連結按鈕定位 */
+        /* 💡 修正被裁切問題：將縮小版按鈕精準固定在右下角邊緣 */
         .link-container {
             position: absolute;
-            bottom: 0px;       /* 貼齊容器最底部 */
-            right: 15%;        /* 控制左右位置：數字變大往左，變小往右 */
-            transform: translate(0, 100%); /* 👈 關鍵：利用位移讓按鈕完全掉到圖片外面、文字下方 */
+            bottom: 5px;       /* 👈 固定在距離圖片最底邊 5 像素的地方，不超出圖片 */
+            right: 12%;        /* 👈 左右位置：數字變大往左，變小往右 */
             z-index: 10;
             text-align: center;
             opacity: 0;
@@ -141,9 +141,9 @@
             background-color: #8b0000; 
             color: #ffffff;
             text-decoration: none;
-            padding: 4px 10px;       /* 👈 大幅縮小內邊距 */
+            padding: 4px 10px;       /* 保持縮小 50% 的精緻大小 */
             border-radius: 3px;
-            font-size: 11px;         /* 👈 字體縮小，達到原本的 50% 左右體積 */
+            font-size: 11px;         
             font-weight: bold;
             letter-spacing: 0.5px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
