@@ -18,26 +18,28 @@
             min-height: 100vh;
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
             overflow-x: hidden;
-            padding: 40px 20px; /* 增加上下留白，給翻開後的長卡片更多空間 */
+            padding: 60px 20px; /* 再增加上下安全留白 */
         }
 
         /* 邀請卡外層主容器 */
         .card-container {
             position: relative;
             width: 100%;
-            max-width: 600px; /* 可以根據需要調整最大寬度 */
+            max-width: 600px; 
             perspective: 2500px; 
             cursor: pointer;
             transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateY(0);
+            margin-top: 0;
         }
 
-        /* 💡 點擊打開時，整張卡片平滑下移，挪出空間給翻上去的內頁上 */
+        /* 💡 修正關鍵：打開時，整張卡片下移距離從 35% 加大到 50% */
+        /* 同時加上 margin-top 確保上方空間絕對充足，把內頁上整塊推到看得到的地方 */
         .card-container.open {
-            transform: translateY(35%);
+            transform: translateY(50%);
         }
 
-        /* 摺頁容器：移除所有固定高度與比例，由內部圖片自動撐開 */
+        /* 摺頁容器 */
         .folder-half {
             position: relative;
             width: 100%;
@@ -62,11 +64,11 @@
 
         /* ==================== 2. 下半部底層 ==================== */
         .bottom-folder {
-            position: relative; /* 作為推開外層容器高度的基準 */
+            position: relative; 
             z-index: 1;
         }
 
-        /* 正反面共同設定：完全拿掉 height: 100% */
+        /* 正反面共同設定 */
         .face {
             width: 100%;
             backface-visibility: hidden; 
@@ -74,18 +76,18 @@
             overflow: hidden;
         }
         
-        /* 💡 核心修正：高自適應！圖片多高，格子就多高，絕對不留空白 */
+        /* 高自適應圖片 */
         .face img {
             width: 100%;
             height: auto; 
             display: block;
         }
 
-        /* 讓正面和背面在絕對定位中完美重疊，且高度一致 */
+        /* 讓正面和背面完美重疊 */
         .top-folder .front {
             position: relative;
             z-index: 2;
-            border-radius: 8px 8px 0 0; /* 未打開時，封面有上方圓角 */
+            border-radius: 8px 8px 0 0; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .top-folder .back {
@@ -94,14 +96,14 @@
             left: 0;
             height: 100%;
             transform: rotateX(180deg);
-            border-radius: 8px 8px 0 0; /* 翻過去後，變成內頁上的頂部圓角 */
+            border-radius: 8px 8px 0 0; 
         }
 
         /* 下半部設定 */
         .bottom-folder .front {
             position: relative;
             z-index: 2;
-            border-radius: 0 0 8px 8px; /* 內頁下的底部圓角 */
+            border-radius: 0 0 8px 8px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         .bottom-folder .back {
@@ -173,7 +175,7 @@
 
     </div>
 
-    <script {cite: 2}>
+    <script>
         const card = document.getElementById('invitationCard');
         card.addEventListener('click', () => {
             card.classList.toggle('open');
