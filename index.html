@@ -16,116 +16,180 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            overflow: hidden;
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            overflow-x: hidden;
+            padding: 20px;
         }
 
-        /* 邀請卡容器：設定為橫式比例 */
+        /* 邀請卡主容器 */
         .card-container {
             position: relative;
-            width: 90vw;
-            max-width: 800px;
-            aspect-ratio: 4 / 3; /* 根據你的圖片比例調整，橫式通常為 4:3 或 16:9 */
-            perspective: 1500px; /* 3D 透視效果 */
+            width: 100%;
+            max-width: 750px;
+            aspect-ratio: 4 / 3; 
+            perspective: 2000px; /* 3D 立體透視感 */
             cursor: pointer;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        /* 內頁容器（固定在底層）*/
+        .inside-pages {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             border-radius: 8px;
+            overflow: hidden;
+            z-index: 1;
             background: #fff;
         }
 
-        /* 內頁：固定在底層 */
-        .inside-page {
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* 內頁-上 與 內頁-下 */
+        .inside-top, .inside-bottom {
             width: 100%;
-            height: 100%;
-            border-radius: 8px;
+            height: 50%; 
             overflow: hidden;
         }
-        .inside-page img {
+        .inside-top img, .inside-bottom img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* 確保整張內頁完整顯示 */
-            background-color: #f7f7f7;
+            object-fit: cover; 
+            display: block;
         }
 
-        /* 封面：掀開的機關 */
-        .cover-page {
+        /* 掀開式的上蓋（包含封面與裡面的封底） */
+        .movable-cover {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            transform-origin: top center; 
+            transform-style: preserve-3d; 
+            transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 2;
-            transform-origin: top center; /* 以正上方為軸心向上掀開 */
-            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
+        }
+
+        /* 蓋子正反面的共同設定 */
+        .face {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* 💡 確保翻過去時看不到背面 */
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .cover-page img {
+        /* 正面：封面（完全不透明） */
+        .face.front {
+            z-index: 2;
+            transform: rotateY(0deg);
+        }
+        .face.front img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            background-color: #ececec;
+            object-fit: cover;
         }
 
-        /* 提示點擊的輕微浮動動畫 */
-        .cover-page::after {
-            content: "👇 點擊打開邀請函";
+        /* 背面：封底 (因為上掀 180 度，所以預先轉向讓掀開後是正的) */
+        .face.back {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+        .face.back img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 輕微浮動的提示點擊標籤 */
+        .click-hint {
             position: absolute;
-            bottom: 20px;
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(139, 0, 0, 0.9); 
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
+            padding: 10px 22px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: bold;
             letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             animation: bounce 2s infinite;
             pointer-events: none;
-            transition: opacity 0.3s;
+            transition: opacity 0.4s ease;
+            z-index: 3;
         }
 
-        /* 當點擊啟用 (.open) 時的動畫狀態 */
-        .card-container.open .cover-page {
-            transform: rotateX(115deg); /* 向上掀開超過 90 度，營造掀開感 */
-            box-shadow: 0 20px 30px rgba(0,0,0,0.3);
+        /* 【當卡片被點擊打開時的狀態 (.open)】 */
+        .card-container.open .movable-cover {
+            /* 向上掀開 135 度，微微露出封底並完美展現內部 */
+            transform: rotateX(135deg); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); /* 打開時加強陰影 */
         }
 
-        .card-container.open .cover-page::after {
-            opacity: 0; /* 打開後隱藏提示 */
+        .card-container.open .click-hint {
+            opacity: 0; 
         }
 
+        /* 提示動畫 */
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
             40% { transform: translate(-50%, -10px); }
             60% { transform: translate(-50%, -5px); }
+        }
+
+        @media (max-width: 480px) {
+            .click-hint {
+                font-size: 13px;
+                padding: 8px 16px;
+                bottom: 15px;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="card-container" id="invitationCard">
-        <!-- 封面 (在上層，點擊後向上掀) -->
-        <div class="cover-page">
-            <!-- ⚠️ 請將此處替換為你的封面圖檔名 -->
-            <img src="cover.png" alt="邀請卡封面">
+        
+        <!-- 點擊提示 -->
+        <div class="click-hint">👇 點擊親自啟封邀請函</div>
+
+        <!-- 1. 動態上蓋層 (封面 + 封底) -->
+        <div class="movable-cover">
+            <!-- 前面：封面 -->
+            <div class="face front">
+                <img src="封面.jpg" alt="邀請函封面">
+            </div>
+            <!-- 後面：封底 (翻開後會呈現於最上方) -->
+            <div class="face back">
+                <img src="封底.png" alt="邀請函封底">
+            </div>
         </div>
 
-        <!-- 內頁 (在底層，封面掀開後露出) -->
-        <div class="inside-page">
-            <!-- ⚠️ 請將此處替換為你的內頁圖檔名 -->
-            <img src="inside.png" alt="邀請卡內頁">
+        <!-- 2. 固定底層 (內頁上 + 內頁下) -->
+        <div class="inside-pages">
+            <!-- 內頁 上半部 -->
+            <div class="inside-top">
+                <img src="內頁上.jpg" alt="邀請函內頁上">
+            </div>
+            <!-- 內頁 下半部 -->
+            <div class="inside-bottom">
+                <img src="內頁下.png" alt="邀請函內頁下">
+            </div>
         </div>
+
     </div>
 
     <script>
-        // 透過 JavaScript 切換 class 觸發 CSS 3D 翻轉動畫
+        // 點擊卡片任何地方切換打開/關閉狀態
         const card = document.getElementById('invitationCard');
         card.addEventListener('click', () => {
             card.classList.toggle('open');
