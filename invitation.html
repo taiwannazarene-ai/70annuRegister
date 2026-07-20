@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拿撒勒人會七十周年慶典 邀請函</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        /* 邀請卡容器：設定為橫式比例 */
+        .card-container {
+            position: relative;
+            width: 90vw;
+            max-width: 800px;
+            aspect-ratio: 4 / 3; /* 根據你的圖片比例調整，橫式通常為 4:3 或 16:9 */
+            perspective: 1500px; /* 3D 透視效果 */
+            cursor: pointer;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        /* 內頁：固定在底層 */
+        .inside-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .inside-page img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* 確保整張內頁完整顯示 */
+            background-color: #f7f7f7;
+        }
+
+        /* 封面：掀開的機關 */
+        .cover-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            transform-origin: top center; /* 以正上方為軸心向上掀開 */
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .cover-page img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: #ececec;
+        }
+
+        /* 提示點擊的輕微浮動動畫 */
+        .cover-page::after {
+            content: "👇 點擊打開邀請函";
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            letter-spacing: 1px;
+            animation: bounce 2s infinite;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        /* 當點擊啟用 (.open) 時的動畫狀態 */
+        .card-container.open .cover-page {
+            transform: rotateX(115deg); /* 向上掀開超過 90 度，營造掀開感 */
+            box-shadow: 0 20px 30px rgba(0,0,0,0.3);
+        }
+
+        .card-container.open .cover-page::after {
+            opacity: 0; /* 打開後隱藏提示 */
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+            40% { transform: translate(-50%, -10px); }
+            60% { transform: translate(-50%, -5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card-container" id="invitationCard">
+        <!-- 封面 (在上層，點擊後向上掀) -->
+        <div class="cover-page">
+            <!-- ⚠️ 請將此處替換為你的封面圖檔名 -->
+            <img src="cover.png" alt="邀請卡封面">
+        </div>
+
+        <!-- 內頁 (在底層，封面掀開後露出) -->
+        <div class="inside-page">
+            <!-- ⚠️ 請將此處替換為你的內頁圖檔名 -->
+            <img src="inside.png" alt="邀請卡內頁">
+        </div>
+    </div>
+
+    <script>
+        // 透過 JavaScript 切換 class 觸發 CSS 3D 翻轉動畫
+        const card = document.getElementById('invitationCard');
+        card.addEventListener('click', () => {
+            card.classList.toggle('open');
+        });
+    </script>
+
+</body>
+</html>
