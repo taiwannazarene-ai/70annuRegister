@@ -119,10 +119,11 @@
         /* 💡 精準修正後的網站連結按鈕定位 */
        /* 💡 縮小 50% 並精準下移的網站連結按鈕定位 */
         /* 💡 修正被裁切問題：將縮小版按鈕精準固定在右下角邊緣 */
+        /* 💡 精準往上微調，避開文字 */
         .link-container {
             position: absolute;
-            bottom: 5px;       /* 👈 固定在距離圖片最底邊 5 像素的地方，不超出圖片 */
-            right: 12%;        /* 👈 左右位置：數字變大往左，變小往右 */
+            bottom: 32px;      /* 👈 關鍵：從 5px 拉高到 32px，讓它剛好跳過文字，待在字的正上方空位 */
+            right: 12%;        /* 保持原本對齊的左右位置 */
             z-index: 10;
             text-align: center;
             opacity: 0;
@@ -141,7 +142,7 @@
             background-color: #8b0000; 
             color: #ffffff;
             text-decoration: none;
-            padding: 4px 10px;       /* 保持縮小 50% 的精緻大小 */
+            padding: 4px 10px;       
             border-radius: 3px;
             font-size: 11px;         
             font-weight: bold;
