@@ -75,7 +75,7 @@
             height: 100%;
             backface-visibility: hidden; 
             background-color: #ffffff;
-            overflow: hidden;
+            overflow: hidden; /* 內頁圖片維持裁切 */
         }
         
         /* 大圖自動局部裁切技術 */
@@ -115,24 +115,19 @@
         }
         .bottom-folder .back img { top: 0; }
 
-        /* 💡 網站連結按鈕樣式 */
-        /* 💡 精準修正後的網站連結按鈕定位 */
-       /* 💡 縮小 50% 並精準下移的網站連結按鈕定位 */
-        /* 💡 修正被裁切問題：將縮小版按鈕精準固定在右下角邊緣 */
-        /* 💡 精準往上微調，避開文字 */
-        .link-container {
+        /* 💡 移出外側後的全新按鈕定位（絕對不會被 hidden 裁切） */
+        .outside-link-container {
             position: absolute;
-            bottom: 32px;      /* 👈 關鍵：從 5px 拉高到 32px，讓它剛好跳過文字，待在字的正上方空位 */
-            right: 12%;        /* 保持原本對齊的左右位置 */
-            z-index: 10;
-            text-align: center;
+            bottom: 8px;       /* 👈 控制在內頁圖片最底邊緣的外側附近 */
+            right: 15%;        /* 👈 控制左右對齊「活動網址」四個字的位置（數字大往左，小往右） */
+            z-index: 20;       /* 確保階層高於所有摺頁 */
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease 0.8s;
         }
 
         /* 當卡片打開時，顯示連結按鈕並啟用點擊 */
-        .card-container.open .link-container {
+        .card-container.open .outside-link-container {
             opacity: 1;
             pointer-events: auto;
         }
@@ -142,32 +137,17 @@
             background-color: #8b0000; 
             color: #ffffff;
             text-decoration: none;
-            padding: 4px 10px;       
+            padding: 3px 8px;        /* 縮小 50% 比例體積 */
             border-radius: 3px;
-            font-size: 11px;         
+            font-size: 11px;         /* 縮小後的精緻字體 */
             font-weight: bold;
             letter-spacing: 0.5px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        .web-link {
-            display: inline-block;
-            background-color: #8b0000; /* 深紅色調，與提示標籤呼應 */
-            color: #ffffff;
-            text-decoration: none;
-            padding: 8px 24px;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
         .web-link:hover {
             background-color: #a00000;
-            transform: translateY(-2px);
         }
 
         /* 提示點擊標籤 */
@@ -219,15 +199,15 @@
         <div class="folder-half bottom-folder">
             <div class="face front">
                 <img src="inside.png" alt="邀請函內頁下">
-                
-                <!-- 💡 這裡加入了網站連結，點擊會另開視窗 -->
-                <div class="link-container" id="linkBlock">
-                    <a href="https://sites.google.com/d/1mtj5TVpvDeKUd5C2tKbe7WWRn5Xdk6Bc/p/1xfrABDt1rhfp8lSMx9zVbwR--IPDRRId/edit" target="_blank" class="web-link" id="linkAnchor">網站連結</a>
-                </div>
             </div>
             <div class="face back">
                 <img src="cover.png" alt="邀請函封底">
             </div>
+        </div>
+
+        <!-- 💡 核心改動：將按鈕移出圖片容器外層，與下半部摺頁平行，並加上獨立 z-index -->
+        <div class="outside-link-container" id="linkBlock">
+            <a href="https://sites.google.com/d/1mtj5TVpvDeKUd5C2tKbe7WWRn5Xdk6Bc/p/1xfrABDt1rhfp8lSMx9zVbwR--IPDRRId/edit" target="_blank" class="web-link" id="linkAnchor">網站連結</a>
         </div>
 
     </div>
