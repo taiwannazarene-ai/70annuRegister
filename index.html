@@ -32,21 +32,21 @@
             transform: translateY(0);
         }
 
-        /* 💡 打開時：整張卡片平滑下移 50%，挪出空間給翻上去的內頁上 */
+        /* 打開時平滑下移 50%，挪出空間給翻上去的內頁上 */
         .card-container.open {
             transform: translateY(50%);
         }
 
-        /* 摺頁容器：利用 padding-top (50%) 技巧，讓容器高度精確等於寬度的一半（正好是半張 A4 的比例） */
+        /* 摺頁容器：高度改由 JS 動態計算，預設先給個舒服的直式比例 */
         .folder-half {
             position: relative;
             width: 100%;
-            padding-top: 50%; /* 寬高比 2:1 的黃金半面容器 */
+            height: 420px; /* JS 載入後會精準覆蓋這個高度 */
             transform-style: preserve-3d;
             display: block;
         }
 
-        /* ==================== 1. 上半部動態摺頁 (負責封面與內頁上) ==================== */
+        /* ==================== 1. 上半部動態摺頁 ==================== */
         .top-folder {
             position: absolute;
             top: 0;
@@ -60,7 +60,7 @@
             transform: rotateX(180deg);
         }
 
-        /* ==================== 2. 下半部底層 (負責內頁下與封底) ==================== */
+        /* ==================== 2. 下半部底層 ==================== */
         .bottom-folder {
             position: relative; 
             z-index: 1;
@@ -78,49 +78,49 @@
             overflow: hidden;
         }
         
-        /* 💡 核心修正：大圖自動局部裁切技術！ */
+        /* 大圖自動局部裁切技術 */
         .face img {
             position: absolute;
             width: 100%;
-            height: 200%; /* 圖片強制拉伸到容器的兩倍高，以便我們上下取樣 */
+            height: 200%; /* 圖片為容器的兩倍高 */
             display: block;
         }
 
-        /* 【上折頁正面】：封面 -> 截取 cover.png 的下半部 */
+        /* 【上折頁正面】：封面 -> cover.png 的下半部 */
         .top-folder .front {
             border-radius: 8px 8px 0 0; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .top-folder .front img {
-            bottom: 0; /* 靠下對齊，露出大圖的下半截 */
+            bottom: 0; 
         }
 
-        /* 【上折頁背面】：內頁上 -> 截取 inside.png 的上半部 */
+        /* 【上折頁背面】：內頁上 -> inside.png 的上半部 */
         .top-folder .back {
             transform: rotateX(180deg);
             border-radius: 8px 8px 0 0; 
         }
         .top-folder .back img {
-            top: 0; /* 靠上對齊，露出大圖的上半截 */
+            top: 0; 
         }
 
-        /* 【底層正面】：內頁下 -> 截取 inside.png 的下半部 */
+        /* 【底層正面】：內頁下 -> inside.png 的下半部 */
         .bottom-folder .front {
             border-radius: 0 0 8px 8px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         .bottom-folder .front img {
-            bottom: 0; /* 靠下對齊，露出大圖的下半截 */
+            bottom: 0; 
         }
 
-        /* 【底層背面】：封底 -> 截取 cover.png 的上半部 */
+        /* 【底層背面】：封底 -> cover.png 的上半部 */
         .bottom-folder .back {
             transform: rotateY(180deg); 
             z-index: 1;
             border-radius: 0 0 8px 8px;
         }
         .bottom-folder .back img {
-            top: 0; /* 靠上對齊，露出大圖的上半截 */
+            top: 0; 
         }
 
         /* 提示點擊標籤 */
@@ -172,17 +172,18 @@
         
         <div class="click-hint">👇 點擊親自啟封邀請函</div>
 
-        <!-- 1. 上半部摺頁 (包含：大圖下半截為封面 / 大圖上半截為內頁上) -->
+        <!-- 1. 上半部摺頁 -->
         <div class="folder-half top-folder">
             <div class="face front">
                 <img src="cover.png" alt="邀請函封面">
             </div>
             <div class="face back">
-                <img src="inside.png" alt="邀請函內頁上">
+                <!-- 💡 用這張圖作為比例基準計算器 -->
+                <img src="inside.png" id="baseImage" alt="邀請函內頁上">
             </div>
         </div>
 
-        <!-- 2. 下半部底頁 (包含：大圖下半截為內頁下 / 大圖上半截為封底) -->
+        <!-- 2. 下半部底頁 -->
         <div class="folder-half bottom-folder">
             <div class="face front">
                 <img src="inside.png" alt="邀請函內頁下">
@@ -200,7 +201,35 @@
     <script>
         let player;
         const card = document.getElementById('invitationCard');
+        const baseImg = document.getElementById('baseImage');
+        const folders = document.querySelectorAll('.folder-half');
 
+        // 💡 核心自動比例修正：讀取圖片寬高，精準設定半面容器高度
+        function adjustCardRatio() {
+            if (baseImg.naturalWidth > 0 && baseImg.naturalHeight > 0) {
+                // 算出整張直式大圖的 寬高比 (width / height)
+                const imgRatio = baseImg.naturalWidth / baseImg.naturalHeight;
+                // 因為容器只裝「半張圖」，所以半面容器的實際高度 = 容器當前寬度 / (imgRatio * 2)
+                const currentWidth = card.offsetWidth;
+                const calculatedHeight = currentWidth / (imgRatio * 2);
+                
+                // 將計算出來的完美高度套用到摺頁容器上
+                folders.forEach(folder => {
+                    folder.style.height = calculatedHeight + 'px';
+                });
+            }
+        }
+
+        // 當圖片載入完成，或視窗大小改變時，自動重新計算
+        baseImg.addEventListener('load', adjustCardRatio);
+        window.addEventListener('resize', adjustCardRatio);
+        
+        // 確保在圖片已經快取的情況下也能觸發計算
+        if (baseImg.complete) {
+            adjustCardRatio();
+        }
+
+        // YouTube 播放器初始化
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
                 videoId: 'kANOhdjc7l4',
@@ -215,6 +244,7 @@
             });
         }
 
+        // 卡片點擊事件
         card.addEventListener('click', () => {
             const isOpen = card.classList.toggle('open');
             
