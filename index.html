@@ -32,7 +32,7 @@
             transform: translateY(0);
         }
 
-        /* 打開時平滑下移 50%，挪出空間給翻上去的內頁上 */
+        /* 打開時平滑下移 50% */
         .card-container.open {
             transform: translateY(50%);
         }
@@ -86,42 +86,34 @@
             display: block;
         }
 
-        /* 【上折頁正面】：封面 -> cover.png 的下半部 */
+        /* 【上折頁正面】：封面 */
         .top-folder .front {
             border-radius: 8px 8px 0 0; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        .top-folder .front img {
-            bottom: 0; 
-        }
+        .top-folder .front img { bottom: 0; }
 
-        /* 【上折頁背面】：內頁上 -> inside.png 的上半部 */
+        /* 【上折頁背面】：內頁上 */
         .top-folder .back {
             transform: rotateX(180deg);
             border-radius: 8px 8px 0 0; 
         }
-        .top-folder .back img {
-            top: 0; 
-        }
+        .top-folder .back img { top: 0; }
 
-        /* 【底層正面】：內頁下 -> inside.png 的下半部 */
+        /* 【底層正面】：內頁下 */
         .bottom-folder .front {
             border-radius: 0 0 8px 8px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-        .bottom-folder .front img {
-            bottom: 0; 
-        }
+        .bottom-folder .front img { bottom: 0; }
 
-        /* 【底層背面】：封底 -> cover.png 的上半部 */
+        /* 【底層背面】：封底 */
         .bottom-folder .back {
             transform: rotateY(180deg); 
             z-index: 1;
             border-radius: 0 0 8px 8px;
         }
-        .bottom-folder .back img {
-            top: 0; 
-        }
+        .bottom-folder .back img { top: 0; }
 
         /* 提示點擊標籤 */
         .click-hint {
@@ -143,30 +135,16 @@
             z-index: 3;
         }
 
-        .card-container.open .click-hint {
-            opacity: 0; 
-        }
+        .card-container.open .click-hint { opacity: 0; }
 
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
             40% { transform: translate(-50%, -10px); }
             60% { transform: translate(-50%, -5px); }
         }
-
-        /* 隱藏 YouTube 播放器 */
-        #youtube-player {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            opacity: 0;
-            pointer-events: none;
-        }
     </style>
 </head>
 <body>
-
-    <!-- 隱藏的 YouTube 播放器 -->
-    <div id="youtube-player"></div>
 
     <div class="card-container" id="invitationCard">
         
@@ -194,14 +172,14 @@
 
     </div>
 
-    <!-- 載入 YouTube Iframe API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
-
     <script>
-        let player;
         const card = document.getElementById('invitationCard');
         const baseImg = document.getElementById('baseImage');
         const folders = document.querySelectorAll('.folder-half');
+
+        // 💡 建立原生音訊物件，指向同資料夾下的 music.mp3
+        const bgm = new Audio('music.mp3');
+        bgm.loop = true; // 開啟自動循環播放
 
         // 自動比例修正
         function adjustCardRatio() {
@@ -220,33 +198,17 @@
         window.addEventListener('resize', adjustCardRatio);
         if (baseImg.complete) { adjustCardRatio(); }
 
-        // 初始化 YouTube 播放器器，設定無限循環播放
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtube-player', {
-                videoId: 'K22T19p8A3Q', // 您的爵士音樂 ID
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'disablekb': 1,
-                    'fs': 0,
-                    'rel': 0,
-                    'modestbranding': 1,
-                    'loop': 1,               // 💡 啟用循環播放
-                    'playlist': 'K22T19p8A3Q' // 💡 YouTube 規定：設定 loop 時必須重複填寫當前影片 ID 作為播放清單
-                }
-            });
-        }
-
         // 卡片點擊事件
         card.addEventListener('click', () => {
             const isOpen = card.classList.toggle('open');
             
-            if (player && typeof player.playVideo === 'function') {
-                if (isOpen) {
-                    player.playVideo();
-                } else {
-                    player.pauseVideo();
-                }
+            if (isOpen) {
+                // 點擊瞬間立刻播放音樂
+                bgm.play().catch(err => {
+                    console.log("音訊播放被瀏覽器阻擋:", err);
+                });
+            } else {
+                bgm.pause();
             }
         });
     </script>
