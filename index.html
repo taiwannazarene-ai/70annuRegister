@@ -75,7 +75,7 @@
             height: 100%;
             backface-visibility: hidden; 
             background-color: #ffffff;
-            overflow: hidden; /* 內頁圖片維持裁切 */
+            overflow: hidden; 
         }
         
         /* 大圖自動局部裁切技術 */
@@ -115,12 +115,12 @@
         }
         .bottom-folder .back img { top: 0; }
 
-        /* 💡 移出外側後的全新按鈕定位（絕對不會被 hidden 裁切） */
+        /* 外側按鈕定位 */
         .outside-link-container {
             position: absolute;
-            bottom: 8px;       /* 👈 控制在內頁圖片最底邊緣的外側附近 */
-            right: 15%;        /* 👈 控制左右對齊「活動網址」四個字的位置（數字大往左，小往右） */
-            z-index: 20;       /* 確保階層高於所有摺頁 */
+            bottom: 8px;       
+            right: 15%;        
+            z-index: 20;       
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease 0.8s;
@@ -137,9 +137,9 @@
             background-color: #8b0000; 
             color: #ffffff;
             text-decoration: none;
-            padding: 3px 8px;        /* 縮小 50% 比例體積 */
+            padding: 3px 8px;        
             border-radius: 3px;
-            font-size: 11px;         /* 縮小後的精緻字體 */
+            font-size: 11px;         
             font-weight: bold;
             letter-spacing: 0.5px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -205,9 +205,9 @@
             </div>
         </div>
 
-        <!-- 💡 核心改動：將按鈕移出圖片容器外層，與下半部摺頁平行，並加上獨立 z-index -->
+        <!-- 💡 連結已更新為慶典官方首頁網址 -->
         <div class="outside-link-container" id="linkBlock">
-            <a href="https://sites.google.com/d/1mtj5TVpvDeKUd5C2tKbe7WWRn5Xdk6Bc/p/1xfrABDt1rhfp8lSMx9zVbwR--IPDRRId/edit" target="_blank" class="web-link" id="linkAnchor">網站連結</a>
+            <a href="https://sites.google.com/view/twnnaza70anu/%E9%A6%96%E9%A0%81" target="_blank" class="web-link" id="linkAnchor">網站連結</a>
         </div>
 
     </div>
