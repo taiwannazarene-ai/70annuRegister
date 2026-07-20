@@ -18,7 +18,7 @@
             min-height: 100vh;
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
             overflow-x: hidden;
-            padding: 60px 20px; /* 再增加上下安全留白 */
+            padding: 60px 20px; 
         }
 
         /* 邀請卡外層主容器 */
@@ -30,11 +30,9 @@
             cursor: pointer;
             transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateY(0);
-            margin-top: 0;
         }
 
-        /* 💡 修正關鍵：打開時，整張卡片下移距離從 35% 加大到 50% */
-        /* 同時加上 margin-top 確保上方空間絕對充足，把內頁上整塊推到看得到的地方 */
+        /* 打開時，整張卡片平滑下移 50%，完美展現頂部文字 */
         .card-container.open {
             transform: translateY(50%);
         }
@@ -57,7 +55,6 @@
             z-index: 2;
         }
 
-        /* 點擊打開：上半部向上翻轉 180 度 */
         .card-container.open .top-folder {
             transform: rotateX(180deg);
         }
@@ -76,7 +73,7 @@
             overflow: hidden;
         }
         
-        /* 高自適應圖片 */
+        /* 高自適應圖片，確保無縫黏合 */
         .face img {
             width: 100%;
             height: auto; 
@@ -145,9 +142,21 @@
             40% { transform: translate(-50%, -10px); }
             60% { transform: translate(-50%, -5px); }
         }
+
+        /* 💡 隱藏 YouTube 播放器器，只用作背景音樂 */
+        #youtube-player {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
+
+    <!-- 隱藏的 YouTube 播放器容器 -->
+    <div id="youtube-player"></div>
 
     <div class="card-container" id="invitationCard">
         
@@ -175,10 +184,40 @@
 
     </div>
 
+    <!-- 載入 YouTube Iframe API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
     <script>
+        let player;
         const card = document.getElementById('invitationCard');
+
+        // 當 YouTube API 準備就緒時，初始化隱藏的播放器
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                videoId: 'kANOhdjc7l4', // 您的 YouTube 音樂 ID
+                playerVars: {
+                    'autoplay': 0,      // 初始不自動播放（遵循瀏覽器安全規範）
+                    'controls': 0,      // 隱藏控制項
+                    'disablekb': 1,    // 停用鍵盤控制
+                    'fs': 0,            // 停用全螢幕按鈕
+                    'rel': 0,           // 不顯示相關影片
+                    'modestbranding': 1 // 隱藏 YouTube Logo
+                }
+            });
+        }
+
+        // 點擊邀請函的事件控制
         card.addEventListener('click', () => {
-            card.classList.toggle('open');
+            const isOpen = card.classList.toggle('open');
+            
+            // 💡 完美的開合音效同步：
+            if (player && typeof player.playVideo === 'function') {
+                if (isOpen) {
+                    player.playVideo();  // 打開卡片時：流暢播放爵士樂
+                } else {
+                    player.pauseVideo(); // 合上卡片時：自動暫停音樂
+                }
+            }
         });
     </script>
 
