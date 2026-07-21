@@ -20,9 +20,8 @@
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
             overflow-x: hidden;
             overflow-y: auto; 
-            /* 預留足夠的上方頂部空間給翻開的封面 */
-            padding: 150px 20px 100px 20px; 
-            transition: padding 0.5s ease;
+            /* 💡 精簡頂部留白，避免未開啟前距離頂部太遠，打開後又被擠出去 */
+            padding: 40px 20px 60px 20px; 
         }
 
         /* 邀請卡外層主容器 */
@@ -37,28 +36,9 @@
             margin: 0 auto; 
         }
 
-        /* 打開時預設平滑下移 40% (電腦大螢幕) */
+        /* 💡 取消展開時額外的下移，確保版面穩定 */
         .card-container.open {
-            transform: translateY(40%);
-        }
-
-        /* 💡 針對不同螢幕高度，響應式微調下移幅度與頂部留白 */
-        @media (max-height: 800px) {
-            body {
-                padding-top: 130px;
-            }
-            .card-container.open {
-                transform: translateY(30%); /* 中等高度螢幕減少下移 */
-            }
-        }
-
-        @media (max-height: 650px) {
-            body {
-                padding-top: 110px;
-            }
-            .card-container.open {
-                transform: translateY(20%); /* 小螢幕/橫向裝置大幅減少下移 */
-            }
+            transform: translateY(0);
         }
 
         /* 摺頁容器：高度由 JS 動態計算 */
@@ -325,10 +305,13 @@
                     console.log("音訊播放被瀏覽器阻擋:", err);
                 });
 
-                // 💡 新增：打開時自動向下滾動頁面，將邀請函主體居中呈現
+                // 💡 修正：卡片打開時，將頁面平滑滾動至對齊視窗「頂端」，確保最上面的內容完全可見
                 setTimeout(() => {
-                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300);
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }, 100);
 
             } else {
                 bgm.pause();
