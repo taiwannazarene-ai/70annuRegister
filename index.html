@@ -11,41 +11,50 @@
             padding: 0;
         }
         
-        /* 💡 修正 1：改為 flex-start 配合 auto margin，預設居中但允許超出時向下延伸 */
         body {
             background-color: #f3f4f6;
             display: flex;
             justify-content: center;
-            align-items: flex-start; 
+            align-items: center;
             min-height: 100vh;
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
             overflow-x: hidden;
-            overflow-y: auto; /* 💡 允許垂直滾動 */
-            padding: 100px 20px 80px 20px; /* 留出充足的上下安全距 */
+            overflow-y: auto; 
+            padding: 40px 20px; 
         }
 
         /* 邀請卡外層主容器 */
         .card-container {
             position: relative;
             width: 100%;
-            max-width: 600px; 
+            max-width: 500px; /* 💡 稍微調精緻一點，避免小螢幕手機展開後太巨大 */
             perspective: 2500px; 
             cursor: pointer;
             transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateY(0);
-            margin: auto; /* 💡 在垂直方向維持自動置中 */
+            margin: auto;
         }
 
-        /* 打開時平滑下移 50% */
+        /* 💡 核心關鍵：打開時整體向下移動卡片單頁高度的 50%~80%，把向上翻開的空間「補回來」 */
         .card-container.open {
-            transform: translateY(50%);
+            transform: translateY(220px); 
+        }
+
+        /* 手機與直向螢幕微調 */
+        @media (max-width: 600px) {
+            .card-container {
+                max-width: 90%; /* 讓手機上有更充裕的邊距 */
+            }
+            .card-container.open {
+                transform: translateY(180px); /* 手機版調整適當下移 */
+            }
         }
 
         /* 摺頁容器：高度由 JS 動態計算 */
         .folder-half {
             position: relative;
             width: 100%;
-            height: 420px; 
+            height: 350px; 
             transform-style: preserve-3d;
             display: block;
         }
@@ -122,7 +131,7 @@
         /* 外部按鈕公用容器 (bottom: 70px) */
         .outside-link-container {
             position: absolute;
-            bottom: 70px;      
+            bottom: 60px;      
             z-index: 20;       
             opacity: 0;
             pointer-events: none;
@@ -131,12 +140,12 @@
 
         /* 左側：線上報名按鈕定位 */
         .left-btn-pos {
-            left: 12%; 
+            left: 10%; 
         }
 
         /* 右側：網站連結按鈕定位 */
         .right-btn-pos {
-            right: 12%; 
+            right: 10%; 
         }
 
         /* 當卡片打開時，兩個按鈕同時顯示並啟用點擊 */
@@ -177,7 +186,7 @@
             pointer-events: none;
         }
 
-        /* 指向左下的點擊動畫軌跡 (旋轉 135 度讓 👉 指向左下) */
+        /* 指向左下的點擊動畫軌跡 */
         @keyframes tap-down-left {
             0%, 100% {
                 transform: rotate(135deg) translate(0, 0) scale(1);
@@ -272,7 +281,7 @@
         const bgm = new Audio('You Raise Me Up.mp3');
         bgm.loop = true; 
 
-        // 自動比例修正
+        // 自動比例修正，並動態計算打開時應該下移的距離
         function adjustCardRatio() {
             if (baseImg.naturalWidth > 0 && baseImg.naturalHeight > 0) {
                 const imgRatio = baseImg.naturalWidth / baseImg.naturalHeight;
@@ -282,6 +291,11 @@
                 folders.forEach(folder => {
                     folder.style.height = calculatedHeight + 'px';
                 });
+
+                // 💡 動態精準計算下移像素：讓卡片打開時剛好下移「半張卡片的高度」
+                const styleSheet = document.createElement("style");
+                styleSheet.innerText = `.card-container.open { transform: translateY(${calculatedHeight * 0.9}px) !important; }`;
+                document.head.appendChild(styleSheet);
             }
         }
 
