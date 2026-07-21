@@ -115,10 +115,10 @@
         }
         .bottom-folder .back img { top: 0; }
 
-        /* 💡 外部按鈕公用動畫容器：往上提高約 1 公分 (45px) */
+        /* 外部按鈕公用容器 (保持目前的高度 bottom: 100px) */
         .outside-link-container {
             position: absolute;
-            bottom: 100px;      /* 👈 已調整：往上提升 */
+            bottom: 100px;      
             z-index: 20;       
             opacity: 0;
             pointer-events: none;
@@ -141,16 +141,16 @@
             pointer-events: auto;
         }
 
-        /* 💡 按鈕主體樣式：整體放大 50% */
+        /* 按鈕主體樣式 */
         .web-link {
             position: relative;
             display: inline-block;
             background-color: #8b0000; 
             color: #ffffff;
             text-decoration: none;
-            padding: 6px 14px;        /* 👈 已放大內邊距 */
-            border-radius: 5px;       /* 圓角同步加強 */
-            font-size: 15px;          /* 👈 字體加大 50% (11px -> 15px) */
+            padding: 6px 14px;        
+            border-radius: 5px;       
+            font-size: 15px;          
             font-weight: bold;
             letter-spacing: 0.5px;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
@@ -161,39 +161,25 @@
             background-color: #a00000;
         }
 
-        /* 右上角互動小動畫：閃爍呼吸點（適度同步放大） */
-        .badge-animation {
+        /* 💡 右上角「手指點擊」小動畫元件 */
+        .finger-animation {
             position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 10px;
-            height: 10px;
-            background-color: #ffcc00; 
-            border-radius: 50%;
-            box-shadow: 0 0 5px #ffcc00;
+            top: -12px;
+            right: -14px;
+            font-size: 18px; /* 手指大小 */
+            line-height: 1;
+            filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.3));
+            animation: tap 1.2s infinite ease-in-out;
+            pointer-events: none; /* 避免擋住按鈕點擊區域 */
         }
 
-        /* 波紋擴散特效 */
-        .badge-animation::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background-color: #ffcc00;
-            animation: pulse 1.6s infinite ease-out;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                opacity: 0.9;
+        /* 💡 手指點擊（下壓呼吸）動畫軌跡 */
+        @keyframes tap {
+            0%, 100% {
+                transform: translate(0, 0) scale(1) rotate(-10deg);
             }
-            100% {
-                transform: scale(3.5);
-                opacity: 0;
+            50% {
+                transform: translate(-3px, 4px) scale(0.88) rotate(-10deg); /* 向左下微按壓 */
             }
         }
 
@@ -256,7 +242,8 @@
         <div class="outside-link-container left-btn-pos">
             <a href="https://forms.gle/2SzXNmL9b4hQ5FoQA" target="_blank" class="web-link register-link-btn">
                 線上報名
-                <span class="badge-animation"></span>
+                <!-- 💡 改為手指點擊動畫 -->
+                <span class="finger-animation">👉</span>
             </a>
         </div>
 
@@ -264,7 +251,8 @@
         <div class="outside-link-container right-btn-pos">
             <a href="https://sites.google.com/view/twnnaza70anu/%E9%A6%96%E9%A0%81" target="_blank" class="web-link official-link-btn">
                 慶典網站
-                <span class="badge-animation"></span>
+                <!-- 💡 改為手指點擊動畫 -->
+                <span class="finger-animation">👉</span>
             </a>
         </div>
 
