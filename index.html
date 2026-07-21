@@ -115,7 +115,7 @@
         }
         .bottom-folder .back img { top: 0; }
 
-        /* 外部按鈕公用容器 (保持目前的高度 bottom: 100px) */
+        /* 外部按鈕公用容器 (bottom: 100px) */
         .outside-link-container {
             position: absolute;
             bottom: 100px;      
@@ -161,25 +161,25 @@
             background-color: #a00000;
         }
 
-        /* 💡 右上角「指向左下」的手指小動畫元件 */
+        /* 💡 右上角「指向左下」的手指小動畫元件（放大 50%） */
         .finger-animation {
             position: absolute;
-            top: -14px;
-            right: -12px;
-            font-size: 18px; /* 手指大小 */
+            top: -20px;
+            right: -18px;
+            font-size: 27px; /* 👈 字體放大 50% (18px -> 27px) */
             line-height: 1;
             filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.3));
             animation: tap-down-left 1.2s infinite ease-in-out;
             pointer-events: none; /* 避免擋住按鈕點擊區域 */
         }
 
-        /* 💡 指向左下的點擊動畫軌跡 */
+        /* 💡 指向左下的點擊動畫軌跡 (旋轉 135 度讓 👉 指向左下) */
         @keyframes tap-down-left {
             0%, 100% {
-                transform: translate(0, 0) scale(1);
+                transform: rotate(135deg) translate(0, 0) scale(1);
             }
             50% {
-                transform: translate(-4px, 4px) scale(0.88); /* 向左下方點擊按壓 */
+                transform: rotate(135deg) translate(5px, 0) scale(0.9); /* 順著手指方向往按鈕點壓 */
             }
         }
 
@@ -242,8 +242,8 @@
         <div class="outside-link-container left-btn-pos">
             <a href="https://forms.gle/2SzXNmL9b4hQ5FoQA" target="_blank" class="web-link register-link-btn">
                 線上報名
-                <!-- 💡 改為指向左下的手指 -->
-                <span class="finger-animation">↙️</span>
+                <!-- 💡 使用放大 50% 且轉向左下的手指 -->
+                <span class="finger-animation">👉</span>
             </a>
         </div>
 
@@ -251,8 +251,8 @@
         <div class="outside-link-container right-btn-pos">
             <a href="https://sites.google.com/view/twnnaza70anu/%E9%A6%96%E9%A0%81" target="_blank" class="web-link official-link-btn">
                 慶典網站
-                <!-- 💡 改為指向左下的手指 -->
-                <span class="finger-animation">↙️</span>
+                <!-- 💡 使用放大 50% 且轉向左下的手指 -->
+                <span class="finger-animation">👉</span>
             </a>
         </div>
 
