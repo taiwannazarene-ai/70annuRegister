@@ -115,24 +115,24 @@
         }
         .bottom-folder .back img { top: 0; }
 
-        /* 💡 外部按鈕公用動畫容器：控制卡片打開時才浮現 */
+        /* 💡 外部按鈕公用動畫容器：往上提高約 1 公分 (45px) */
         .outside-link-container {
             position: absolute;
-            bottom: 8px;       
+            bottom: 45px;      /* 👈 已調整：往上提升 */
             z-index: 20;       
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease 0.8s;
         }
 
-        /* 💡 左側：線上報名按鈕定位 */
+        /* 左側：線上報名按鈕定位 */
         .left-btn-pos {
-            left: 15%; /* 對齊左邊報名 QR code 的中央線（可微調數字） */
+            left: 12%; 
         }
 
-        /* 💡 右側：網站連結按鈕定位 */
+        /* 右側：網站連結按鈕定位 */
         .right-btn-pos {
-            right: 15%; /* 對齊右邊網站網址的中央線 */
+            right: 12%; 
         }
 
         /* 當卡片打開時，兩個按鈕同時顯示並啟用點擊 */
@@ -141,19 +141,19 @@
             pointer-events: auto;
         }
 
-        /* 按鈕主體樣式 */
+        /* 💡 按鈕主體樣式：整體放大 50% */
         .web-link {
             position: relative;
             display: inline-block;
             background-color: #8b0000; 
             color: #ffffff;
             text-decoration: none;
-            padding: 3px 8px;        
-            border-radius: 3px;
-            font-size: 11px;         
+            padding: 6px 14px;        /* 👈 已放大內邊距 */
+            border-radius: 5px;       /* 圓角同步加強 */
+            font-size: 15px;          /* 👈 字體加大 50% (11px -> 15px) */
             font-weight: bold;
             letter-spacing: 0.5px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
@@ -161,16 +161,16 @@
             background-color: #a00000;
         }
 
-        /* 右上角互動小動畫：閃爍呼吸點 */
+        /* 右上角互動小動畫：閃爍呼吸點（適度同步放大） */
         .badge-animation {
             position: absolute;
-            top: -4px;
-            right: -4px;
-            width: 8px;
-            height: 8px;
+            top: -5px;
+            right: -5px;
+            width: 10px;
+            height: 10px;
             background-color: #ffcc00; 
             border-radius: 50%;
-            box-shadow: 0 0 4px #ffcc00;
+            box-shadow: 0 0 5px #ffcc00;
         }
 
         /* 波紋擴散特效 */
@@ -252,7 +252,7 @@
             </div>
         </div>
 
-        <!-- 💡 新增：左側「線上報名」按鈕（對應 Google 表單） -->
+        <!-- 左側「線上報名」按鈕 -->
         <div class="outside-link-container left-btn-pos">
             <a href="https://forms.gle/2SzXNmL9b4hQ5FoQA" target="_blank" class="web-link register-link-btn">
                 線上報名
@@ -260,7 +260,7 @@
             </a>
         </div>
 
-        <!-- 右側「網站連結」按鈕（對應 70周年官網） -->
+        <!-- 右側「慶典網站」按鈕 -->
         <div class="outside-link-container right-btn-pos">
             <a href="https://sites.google.com/view/twnnaza70anu/%E9%A6%96%E9%A0%81" target="_blank" class="web-link official-link-btn">
                 慶典網站
@@ -299,7 +299,7 @@
         window.addEventListener('resize', adjustCardRatio);
         if (baseImg.complete) { adjustCardRatio(); }
 
-        // 💡 遍歷所有外部連結按鈕，防止點擊時誤觸卡片闔上動畫
+        // 遍歷所有外部連結按鈕，防止點擊時誤觸卡片闔上動畫
         linkBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
