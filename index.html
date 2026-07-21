@@ -11,7 +11,6 @@
             padding: 0;
         }
         
-        /* 💡 修正 1：改為 flex-start 配合 auto margin，預設居中但允許超出時向下延伸 */
         body {
             background-color: #f3f4f6;
             display: flex;
@@ -20,8 +19,10 @@
             min-height: 100vh;
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
             overflow-x: hidden;
-            overflow-y: auto; /* 💡 允許垂直滾動 */
-            padding: 100px 20px 80px 20px; /* 留出充足的上下安全距 */
+            overflow-y: auto; 
+            /* 預留足夠的上方頂部空間給翻開的封面 */
+            padding: 150px 20px 100px 20px; 
+            transition: padding 0.5s ease;
         }
 
         /* 邀請卡外層主容器 */
@@ -33,12 +34,31 @@
             cursor: pointer;
             transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateY(0);
-            margin: auto; /* 💡 在垂直方向維持自動置中 */
+            margin: 0 auto; 
         }
 
-        /* 打開時平滑下移 50% */
+        /* 打開時預設平滑下移 40% (電腦大螢幕) */
         .card-container.open {
-            transform: translateY(50%);
+            transform: translateY(40%);
+        }
+
+        /* 💡 針對不同螢幕高度，響應式微調下移幅度與頂部留白 */
+        @media (max-height: 800px) {
+            body {
+                padding-top: 130px;
+            }
+            .card-container.open {
+                transform: translateY(30%); /* 中等高度螢幕減少下移 */
+            }
+        }
+
+        @media (max-height: 650px) {
+            body {
+                padding-top: 110px;
+            }
+            .card-container.open {
+                transform: translateY(20%); /* 小螢幕/橫向裝置大幅減少下移 */
+            }
         }
 
         /* 摺頁容器：高度由 JS 動態計算 */
@@ -177,7 +197,7 @@
             pointer-events: none;
         }
 
-        /* 指向左下的點擊動畫軌跡 (旋轉 135 度讓 👉 指向左下) */
+        /* 指向左下的點擊動畫軌跡 */
         @keyframes tap-down-left {
             0%, 100% {
                 transform: rotate(135deg) translate(0, 0) scale(1);
@@ -304,6 +324,12 @@
                 bgm.play().catch(err => {
                     console.log("音訊播放被瀏覽器阻擋:", err);
                 });
+
+                // 💡 新增：打開時自動向下滾動頁面，將邀請函主體居中呈現
+                setTimeout(() => {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+
             } else {
                 bgm.pause();
             }
