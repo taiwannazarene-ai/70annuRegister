@@ -27,7 +27,7 @@
         .card-container {
             position: relative;
             width: 100%;
-            max-width: 500px; /* 💡 稍微調精緻一點，避免小螢幕手機展開後太巨大 */
+            max-width: 500px; 
             perspective: 2500px; 
             cursor: pointer;
             transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -35,7 +35,7 @@
             margin: auto;
         }
 
-        /* 💡 核心關鍵：打開時整體向下移動卡片單頁高度的 50%~80%，把向上翻開的空間「補回來」 */
+        /* 打開時整體向下移動 */
         .card-container.open {
             transform: translateY(220px); 
         }
@@ -43,10 +43,10 @@
         /* 手機與直向螢幕微調 */
         @media (max-width: 600px) {
             .card-container {
-                max-width: 90%; /* 讓手機上有更充裕的邊距 */
+                max-width: 90%; 
             }
             .card-container.open {
-                transform: translateY(180px); /* 手機版調整適當下移 */
+                transform: translateY(180px); 
             }
         }
 
@@ -128,10 +128,10 @@
         }
         .bottom-folder .back img { top: 0; }
 
-        /* 外部按鈕公用容器 (bottom: 70px) */
+        /* 💡 外部按鈕公用容器：改為百分比 (12%)，隨螢幕高度等比例縮放 */
         .outside-link-container {
             position: absolute;
-            bottom: 60px;      
+            bottom: 12%;      
             z-index: 20;       
             opacity: 0;
             pointer-events: none;
@@ -140,12 +140,12 @@
 
         /* 左側：線上報名按鈕定位 */
         .left-btn-pos {
-            left: 10%; 
+            left: 12%; 
         }
 
         /* 右側：網站連結按鈕定位 */
         .right-btn-pos {
-            right: 10%; 
+            right: 12%; 
         }
 
         /* 當卡片打開時，兩個按鈕同時顯示並啟用點擊 */
@@ -174,7 +174,7 @@
             background-color: #a00000;
         }
 
-        /* 右上角「指向左下」的手指小動畫元件（放大 50%） */
+        /* 右上角「指向左下」的手指小動畫元件 */
         .finger-animation {
             position: absolute;
             top: -20px;
@@ -292,7 +292,7 @@
                     folder.style.height = calculatedHeight + 'px';
                 });
 
-                // 💡 動態精準計算下移像素：讓卡片打開時剛好下移「半張卡片的高度」
+                // 動態精準計算下移像素：讓卡片打開時剛好下移「半張卡片的高度」
                 const styleSheet = document.createElement("style");
                 styleSheet.innerText = `.card-container.open { transform: translateY(${calculatedHeight * 0.9}px) !important; }`;
                 document.head.appendChild(styleSheet);
