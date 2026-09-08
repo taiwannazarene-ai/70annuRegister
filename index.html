@@ -128,27 +128,19 @@
         }
         .bottom-folder .back img { top: 0; }
 
-        /* 💡 外部按鈕公用容器：改為百分比 (12%)，隨螢幕高度等比例縮放 */
+        /* 💡 外部按鈕公用容器：改為水平置中，垂直位置保持 bottom: 12% */
         .outside-link-container {
             position: absolute;
             bottom: 12%;      
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 20;       
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease 0.8s;
         }
 
-        /* 左側：線上報名按鈕定位 */
-        .left-btn-pos {
-            left: 12%; 
-        }
-
-        /* 右側：網站連結按鈕定位 */
-        .right-btn-pos {
-            right: 12%; 
-        }
-
-        /* 當卡片打開時，兩個按鈕同時顯示並啟用點擊 */
+        /* 當卡片打開時，按鈕顯示並啟用點擊 */
         .card-container.open .outside-link-container {
             opacity: 1;
             pointer-events: auto;
@@ -251,16 +243,8 @@
             </div>
         </div>
 
-        <!-- 左側「線上報名」按鈕 -->
-        <div class="outside-link-container left-btn-pos">
-            <a href="https://forms.gle/2SzXNmL9b4hQ5FoQA" target="_blank" class="web-link register-link-btn">
-                線上報名
-                <span class="finger-animation">👉</span>
-            </a>
-        </div>
-
-        <!-- 右側「慶典網站」按鈕 -->
-        <div class="outside-link-container right-btn-pos">
+        <!-- 水平置中的「慶典網站」按鈕 -->
+        <div class="outside-link-container">
             <a href="https://sites.google.com/view/twnnaza70anu/%E9%A6%96%E9%A0%81" target="_blank" class="web-link official-link-btn">
                 慶典網站
                 <span class="finger-animation">👉</span>
@@ -274,7 +258,7 @@
         const baseImg = document.getElementById('baseImage');
         const folders = document.querySelectorAll('.folder-half');
         
-        // 抓取兩個連結按鈕
+        // 抓取連結按鈕
         const linkBtns = document.querySelectorAll('.web-link');
 
         // 建立原生音訊物件
